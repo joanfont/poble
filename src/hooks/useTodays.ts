@@ -9,6 +9,7 @@ const startDay = "2022-05-05";
 const forcedTowns: Record<string, string> = {
   "2022-08-15": "DE",
   "2022-11-07": "DE",
+  "2023-05-06": "PO",
 };
 
 export function getDayString(shiftDayCount?: number) {
