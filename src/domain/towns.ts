@@ -2,6 +2,8 @@
 // Countries with long/lat => https://developers.google.com/public-data/docs/canonical/countries_csv
 // Countries images => https://github.com/djaiss/mapsicon
 
+import _ from "lodash";
+
 const townCodesWithImage = [
   "de",
   "al",
@@ -399,4 +401,9 @@ export function sanitizeTownName(townName: string): string {
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[- "()]/g, "")
     .toLowerCase();
+}
+
+export function pickManyWithTown(town: Town, howMany: number): Town[] {
+  const allTownsExceptTown = _.filter(towns, (t: Town) => t.code != town.code);
+  return _.shuffle([town, ..._.sampleSize(allTownsExceptTown, howMany - 1)]);
 }

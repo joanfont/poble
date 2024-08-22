@@ -10,6 +10,8 @@ const forcedTowns: Record<string, string> = {
   "2022-08-15": "DE",
   "2022-11-07": "DE",
   "2023-05-06": "PO",
+  "2024-08-21": "BA",
+  "2024-08-22": "BA",
 };
 
 export function getDayString(shiftDayCount?: number) {

@@ -17,8 +17,6 @@ export function CountryInput({
 }: CountryInputProps) {
   const [suggestions, setSuggestions] = useState<string[]>([]);
 
-  const { i18n } = useTranslation();
-
   return (
     <Autosuggest
       suggestions={suggestions}

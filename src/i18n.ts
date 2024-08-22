@@ -8,6 +8,7 @@ const resources = {
       placeholder: "Poble...",
       guess: "Endevinar",
       share: "Compartir",
+      playBonusRound: "Ronda extra 🎉",
       showOnGoogleMaps: "👀 a Google Maps",
       welldone: "Ben fet!",
       unknownTown: "Poble desconegut!",
