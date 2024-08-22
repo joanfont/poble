@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react";
 import { toast } from "react-toastify";
-import { towns, getTownName, sanitizeTownName } from "../domain/towns";
+import { towns, sanitizeTownName } from "../domain/towns";
 import { CountryInput } from "./TownInput";
 import * as geolib from "geolib";
 import { Share } from "./Share";
@@ -75,8 +75,7 @@ export function Town({
       }
       e.preventDefault();
       const guessedTown = towns.find(
-        (town) =>
-          sanitizeTownName(getTownName(town)) === sanitizeTownName(currentGuess)
+        (town) => sanitizeTownName(town.name) === sanitizeTownName(currentGuess)
       );
 
       if (guessedTown == null) {
@@ -113,7 +112,7 @@ export function Town({
       guesses.length === MAX_TRY_COUNT &&
       guesses[guesses.length - 1].distance > 0
     ) {
-      toastId = toast.info(getTownName(town).toUpperCase(), {
+      toastId = toast.info(town.name.toUpperCase(), {
         autoClose: false,
         delay: 2000,
       });
@@ -217,9 +216,7 @@ export function Town({
             />
             <a
               className="underline w-full text-center block mt-4"
-              href={`https://www.google.com/maps?q=${getTownName(
-                town
-              )}+Mallorca&hl=${i18n.resolvedLanguage}`}
+              href={`https://www.google.com/maps?q=${town.name}+Mallorca&hl=${i18n.resolvedLanguage}`}
               target="_blank"
               rel="noopener noreferrer"
             >

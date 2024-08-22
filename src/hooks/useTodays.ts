@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import seedrandom from "seedrandom";
-import { townsWithImage, Town } from "../domain/towns";
+import { towns, Town } from "../domain/towns";
 import { Guess, loadAllGuesses, saveGuesses } from "../domain/guess";
 
 const startDay = "2022-05-05";
@@ -73,7 +73,7 @@ function getTown(dayString: string) {
   const forcedTownCode = forcedTowns[dayString];
   const forcedTown =
     forcedTownCode != null
-      ? townsWithImage.find((town) => town.code === forcedTownCode)
+      ? towns.find((town: Town) => town.code === forcedTownCode)
       : undefined;
 
   if (forcedTown) {
@@ -83,14 +83,7 @@ function getTown(dayString: string) {
   const initialDay = DateTime.fromISO(startDay);
   const today = DateTime.fromISO(dayString);
 
-  if (today < initialDay) {
-    return townsWithImage[
-      Math.floor(seedrandom.alea(dayString)() * townsWithImage.length)
-    ];
-  }
-
   const diff = today.diff(initialDay, "days");
-  const townOffset = diff.days % townsWithImage.length;
 
-  return townsWithImage[townOffset];
+  return towns[diff.days % towns.length];
 }

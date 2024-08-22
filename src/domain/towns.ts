@@ -4,61 +4,6 @@
 
 import _ from "lodash";
 
-const townCodesWithImage = [
-  "de",
-  "al",
-  "ac",
-  "ag",
-  "an",
-  "ar",
-  "at",
-  "ba",
-  "bi",
-  "bu",
-  "bn",
-  "ca",
-  "cm",
-  "cp",
-  "cd",
-  "co",
-  "cs",
-  "es",
-  "ep",
-  "et",
-  "fe",
-  "fo",
-  "in",
-  "lo",
-  "ls",
-  "lb",
-  "lc",
-  "ma",
-  "mn",
-  "mr",
-  "mt",
-  "mo",
-  "mu",
-  "pa",
-  "pe",
-  "po",
-  "pl",
-  "pr",
-  "pu",
-  "ss",
-  "sj",
-  "sl",
-  "se",
-  "sm",
-  "sr",
-  "sa",
-  "se",
-  "sn",
-  "so",
-  "ss",
-  "va",
-  "vi",
-];
-
 export interface Town {
   code: string;
   latitude: number;
@@ -386,14 +331,6 @@ export const towns: Town[] = [
     name: "Esporles",
   },
 ];
-
-export const townsWithImage = towns.filter((t) =>
-  townCodesWithImage.includes(t.code.toLowerCase())
-);
-
-export function getTownName(town: Town) {
-  return town.name;
-}
 
 export function sanitizeTownName(townName: string): string {
   return townName

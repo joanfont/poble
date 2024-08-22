@@ -21,9 +21,7 @@ export function Shield({
 }: ShieldProps) {
   const { t } = useTranslation();
 
-  const [canPlayNextRound, setCanPlayNextRound] = useState(
-    bonusData.bonusRound === Bonus.SHIELD
-  );
+  const [canPlayNextRound, setCanPlayNextRound] = useState(false);
 
   const dayString = useMemo(
     () => getDayString(settingsData.shiftDayCount),
