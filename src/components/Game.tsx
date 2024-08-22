@@ -3,35 +3,37 @@ import { Town } from "./Town";
 import { SettingsData } from "../hooks/useSettings";
 import { Bonus } from "../domain/bonus";
 import { Shield } from "./Shield";
+import { BonusData } from "../hooks/useBonusRound";
 
-export interface GameProps {
+interface GameProps {
   settingsData: SettingsData;
   updateSettings: (newSettings: Partial<SettingsData>) => void;
-  bonusRound: Bonus;
-  updateBonusRound: (bonusRound: Bonus) => void;
+  bonusData: BonusData;
+  updateBonusData: (bonusData: Partial<BonusData>) => void;
 }
 
 export function Game({
   settingsData,
   updateSettings,
-  bonusRound,
-  updateBonusRound,
+  bonusData,
+  updateBonusData,
 }: GameProps) {
+  const bonusRound = bonusData.bonusRound;
   if (Bonus.NONE === bonusRound) {
     return (
       <Town
         settingsData={settingsData}
         updateSettings={updateSettings}
-        bonusRound={bonusRound}
-        updateBonusRound={updateBonusRound}
+        bonusData={bonusData}
+        updateBonusData={updateBonusData}
       />
     );
   } else if (Bonus.SHIELD === bonusRound) {
     return (
       <Shield
         settingsData={settingsData}
-        bonusRound={bonusRound}
-        updateBonusRound={updateBonusRound}
+        bonusData={bonusData}
+        updateBonusData={updateBonusData}
       />
     );
   }

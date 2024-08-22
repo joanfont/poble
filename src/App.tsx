@@ -9,13 +9,14 @@ import { Worldle } from "./components/Worldle";
 import { Stats } from "./components/panels/Stats";
 import { MyEmoji } from "./components/Emoji";
 import { Bonus } from "./domain/bonus";
+import { useBonusRound } from "./hooks/useBonusRound";
 
 function App() {
   const [infoOpen, setInfoOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
 
-  const [bonusRound, setBonusRound] = useState<Bonus>(Bonus.NONE);
+  const [bonusData, updateBonusData] = useBonusRound();
 
   const [settingsData, updateSettings] = useSettings();
 
@@ -84,8 +85,8 @@ function App() {
           <Game
             settingsData={settingsData}
             updateSettings={updateSettings}
-            bonusRound={bonusRound}
-            updateBonusRound={setBonusRound}
+            bonusData={bonusData}
+            updateBonusData={updateBonusData}
           />
           <footer className="flex justify-center items-center text-sm mt-8 mb-1">
             <MyEmoji

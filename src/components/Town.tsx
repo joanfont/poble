@@ -17,18 +17,25 @@ import { useMode } from "../hooks/useMode";
 import { getDayString, useTodays } from "../hooks/useTodays";
 import { MyEmoji } from "./Emoji";
 import { PlayBonusRound } from "./PlayBonusRound";
-import { GameProps } from "./Game";
 import { Bonus } from "../domain/bonus";
-import { update } from "lodash";
+import { SettingsData } from "../hooks/useSettings";
+import { BonusData } from "../hooks/useBonusRound";
 
 const MAX_TRY_COUNT = 4;
+
+interface TownProps {
+  settingsData: SettingsData;
+  updateSettings: (newSettings: Partial<SettingsData>) => void;
+  bonusData: BonusData;
+  updateBonusData: (bonusData: Partial<BonusData>) => void;
+}
 
 export function Town({
   settingsData,
   updateSettings,
-  bonusRound,
-  updateBonusRound,
-}: GameProps) {
+  bonusData,
+  updateBonusData,
+}: TownProps) {
   const { t, i18n } = useTranslation();
   const dayString = useMemo(
     () => getDayString(settingsData.shiftDayCount),
@@ -55,6 +62,9 @@ export function Town({
   const gameEnded =
     guesses.length === MAX_TRY_COUNT ||
     guesses[guesses.length - 1]?.distance === 0;
+
+  const bonusRound = bonusData.bonusRound;
+  const nextBonusRound = Bonus.SHIELD;
 
   const canPlayNextRound = guesses[guesses.length - 1]?.distance === 0;
 
@@ -191,9 +201,9 @@ export function Town({
       <div className="my-2">
         {canPlayNextRound && town && (
           <PlayBonusRound
-            setBonusRound={updateBonusRound}
-            nextBonusRound={Bonus.SHIELD}
-            bonusRound={bonusRound}
+            nextBonusRound={nextBonusRound}
+            bonusData={bonusData}
+            updateBonusData={updateBonusData}
           />
         )}
         {gameEnded && town ? (

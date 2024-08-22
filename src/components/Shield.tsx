@@ -6,23 +6,24 @@ import { getDayString, useTodays } from "../hooks/useTodays";
 import { Bonus } from "../domain/bonus";
 import { SettingsData } from "../hooks/useSettings";
 import { PlayBonusRound } from "./PlayBonusRound";
-
-const MAX_TRY_COUNT = 4;
+import { BonusData } from "../hooks/useBonusRound";
 
 interface ShieldProps {
   settingsData: SettingsData;
-  bonusRound: Bonus;
-  updateBonusRound: (bonusRound: Bonus) => void;
+  bonusData: BonusData;
+  updateBonusData: (bonusData: Partial<BonusData>) => void;
 }
 
 export function Shield({
   settingsData,
-  bonusRound,
-  updateBonusRound,
+  bonusData,
+  updateBonusData,
 }: ShieldProps) {
   const { t } = useTranslation();
 
-  const [canPlayNextRound, setCanPlayNextRound] = useState(false);
+  const [canPlayNextRound, setCanPlayNextRound] = useState(
+    bonusData.bonusRound === Bonus.SHIELD
+  );
 
   const dayString = useMemo(
     () => getDayString(settingsData.shiftDayCount),
@@ -32,7 +33,11 @@ export function Shield({
   const [todays] = useTodays(dayString);
   const { town } = todays;
 
-  const randomTowns = undefined !== town ? pickManyWithTown(town, 4) : [];
+  let randomTowns = bonusData.shieldTowns;
+  if (randomTowns.length === 0 && undefined !== town) {
+    randomTowns = pickManyWithTown(town, 4);
+    updateBonusData({ shieldTowns: randomTowns });
+  }
 
   const checkTown = (selectedTown: Town) => {
     console.log(town);
@@ -63,8 +68,8 @@ export function Shield({
         {canPlayNextRound && (
           <PlayBonusRound
             nextBonusRound={Bonus.SHIELD}
-            setBonusRound={updateBonusRound}
-            bonusRound={bonusRound}
+            bonusData={bonusData}
+            updateBonusData={updateBonusData}
           />
         )}
       </div>
