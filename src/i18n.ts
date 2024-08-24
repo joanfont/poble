@@ -11,6 +11,8 @@ const resources = {
       playBonusRound: "Ronda extra 🎉",
       showOnGoogleMaps: "👀 a Google Maps",
       welldone: "Ben fet!",
+      incorrect: "No és correcte",
+      bonusRoundNoMoreTries: "Ja no ho pots seguir intentant",
       unknownTown: "Poble desconegut!",
       copy: "Resultat copiat!",
       showTown: "🗺️ mostrar mapa!",

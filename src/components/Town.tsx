@@ -13,13 +13,12 @@ import * as geolib from "geolib";
 import { Share } from "./Share";
 import { Guesses } from "./Guesses";
 import { useTranslation } from "react-i18next";
-import { useMode } from "../hooks/useMode";
 import { getDayString, useTodays } from "../hooks/useTodays";
 import { MyEmoji } from "./Emoji";
 import { PlayBonusRound } from "./PlayBonusRound";
-import { Bonus } from "../domain/bonus";
+import { BonusRound } from "../domain/bonus";
 import { SettingsData } from "../hooks/useSettings";
-import { BonusData } from "../hooks/useBonusRound";
+import { BonusData } from "../hooks/useBonus";
 
 const MAX_TRY_COUNT = 4;
 
@@ -44,27 +43,16 @@ export function Town({
 
   const townInputRef = useRef<HTMLInputElement>(null);
 
-  const [todays, addGuess, randomAngle, imageScale] = useTodays(dayString);
+  const [todays, addGuess] = useTodays(dayString);
   const { town, guesses } = todays;
 
   const [currentGuess, setCurrentGuess] = useState("");
-  const [hideImageMode, setHideImageMode] = useMode(
-    "hideImageMode",
-    dayString,
-    settingsData.noImageMode
-  );
-  const [rotationMode, setRotationMode] = useMode(
-    "rotationMode",
-    dayString,
-    settingsData.rotationMode
-  );
 
   const gameEnded =
     guesses.length === MAX_TRY_COUNT ||
     guesses[guesses.length - 1]?.distance === 0;
 
-  const bonusRound = bonusData.bonusRound;
-  const nextBonusRound = Bonus.SHIELD;
+  const nextBonusRound = BonusRound.SHIELD;
 
   const canPlayNextRound = guesses[guesses.length - 1]?.distance === 0;
 
@@ -127,18 +115,6 @@ export function Town({
 
   return (
     <div className="flex-grow flex flex-col mx-2">
-      {hideImageMode && !gameEnded && (
-        <button
-          className="border-2 uppercase my-2 hover:bg-gray-50 active:bg-gray-100 dark:hover:bg-slate-800 dark:active:bg-slate-700"
-          type="button"
-          onClick={() => setHideImageMode(false)}
-        >
-          <MyEmoji
-            text={t("showTown")}
-            options={{ className: "inline-block" }}
-          />
-        </button>
-      )}
       <div className="flex my-1">
         {settingsData.allowShiftingDay && settingsData.shiftDayCount > 0 && (
           <button
@@ -153,18 +129,9 @@ export function Town({
           </button>
         )}
         <img
-          className={`pointer-events-none max-h-52 m-auto transition-transform duration-700 ease-in dark:invert ${
-            hideImageMode && !gameEnded ? "h-0" : "h-full"
-          }`}
+          className="pointer-events-none max-h-52 m-auto transition-transform duration-700 ease-in dark:invert h-full"
           alt="town to guess"
           src={`images/towns/${town?.code.toLowerCase()}/shape.svg`}
-          style={
-            rotationMode && !gameEnded
-              ? {
-                  transform: `rotate(${randomAngle}deg) scale(${imageScale})`,
-                }
-              : {}
-          }
         />
         {settingsData.allowShiftingDay && settingsData.shiftDayCount < 7 && (
           <button
@@ -179,18 +146,6 @@ export function Town({
           </button>
         )}
       </div>
-      {rotationMode && !hideImageMode && !gameEnded && (
-        <button
-          className="border-2 uppercase mb-2 hover:bg-gray-50 active:bg-gray-100 dark:hover:bg-slate-800 dark:active:bg-slate-700"
-          type="button"
-          onClick={() => setRotationMode(false)}
-        >
-          <MyEmoji
-            text={t("cancelRotation")}
-            options={{ className: "inline-block" }}
-          />
-        </button>
-      )}
       <Guesses
         rowCount={MAX_TRY_COUNT}
         guesses={guesses}
@@ -211,8 +166,6 @@ export function Town({
               guesses={guesses}
               dayString={dayString}
               settingsData={settingsData}
-              hideImageMode={hideImageMode}
-              rotationMode={rotationMode}
             />
             <a
               className="underline w-full text-center block mt-4"

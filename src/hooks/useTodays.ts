@@ -6,13 +6,7 @@ import { Guess, loadAllGuesses, saveGuesses } from "../domain/guess";
 
 const startDay = "2022-05-05";
 
-const forcedTowns: Record<string, string> = {
-  "2022-08-15": "DE",
-  "2022-11-07": "DE",
-  "2023-05-06": "PO",
-  "2024-08-21": "BA",
-  "2024-08-22": "BA",
-};
+const forcedTowns: Record<string, string> = {};
 
 export function getDayString(shiftDayCount?: number) {
   return DateTime.now()
@@ -25,9 +19,7 @@ export function useTodays(dayString: string): [
     town?: Town;
     guesses: Guess[];
   },
-  (guess: Guess) => void,
-  number,
-  number
+  (guess: Guess) => void
 ] {
   const [todays, setTodays] = useState<{
     town?: Town;
@@ -55,18 +47,7 @@ export function useTodays(dayString: string): [
     setTodays({ town, guesses });
   }, [dayString]);
 
-  const randomAngle = useMemo(
-    () => seedrandom.alea(dayString)() * 360,
-    [dayString]
-  );
-
-  const imageScale = useMemo(() => {
-    const normalizedAngle = 45 - (randomAngle % 90);
-    const radianAngle = (normalizedAngle * Math.PI) / 180;
-    return 1 / (Math.cos(radianAngle) * Math.sqrt(2));
-  }, [randomAngle]);
-
-  return [todays, addGuess, randomAngle, imageScale];
+  return [todays, addGuess];
 }
 
 function getTown(dayString: string) {

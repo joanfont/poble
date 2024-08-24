@@ -1,9 +1,10 @@
 import React from "react";
 import { Town } from "./Town";
 import { SettingsData } from "../hooks/useSettings";
-import { Bonus } from "../domain/bonus";
+import { BonusRound } from "../domain/bonus";
 import { Shield } from "./Shield";
-import { BonusData } from "../hooks/useBonusRound";
+import { BonusData } from "../hooks/useBonus";
+import { Limits } from "./Limits";
 
 interface GameProps {
   settingsData: SettingsData;
@@ -18,8 +19,7 @@ export function Game({
   bonusData,
   updateBonusData,
 }: GameProps) {
-  const bonusRound = bonusData.bonusRound;
-  if (Bonus.NONE === bonusRound) {
+  if (BonusRound.NONE === bonusData.round) {
     return (
       <Town
         settingsData={settingsData}
@@ -28,9 +28,17 @@ export function Game({
         updateBonusData={updateBonusData}
       />
     );
-  } else if (Bonus.SHIELD === bonusRound) {
+  } else if (BonusRound.SHIELD === bonusData.round) {
     return (
       <Shield
+        settingsData={settingsData}
+        bonusData={bonusData}
+        updateBonusData={updateBonusData}
+      />
+    );
+  } else if (BonusRound.LIMITS === bonusData.round) {
+    return (
+      <Limits
         settingsData={settingsData}
         bonusData={bonusData}
         updateBonusData={updateBonusData}

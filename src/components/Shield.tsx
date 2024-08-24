@@ -3,10 +3,10 @@ import { toast } from "react-toastify";
 import { Town, pickManyWithTown } from "../domain/towns";
 import { useTranslation } from "react-i18next";
 import { getDayString, useTodays } from "../hooks/useTodays";
-import { Bonus } from "../domain/bonus";
+import { BonusRound } from "../domain/bonus";
 import { SettingsData } from "../hooks/useSettings";
 import { PlayBonusRound } from "./PlayBonusRound";
-import { BonusData } from "../hooks/useBonusRound";
+import { BonusData } from "../hooks/useBonus";
 
 interface ShieldProps {
   settingsData: SettingsData;
@@ -22,6 +22,7 @@ export function Shield({
   const { t } = useTranslation();
 
   const [canPlayNextRound, setCanPlayNextRound] = useState(false);
+  const [canPlay, setCanPlay] = useState(true);
 
   const dayString = useMemo(
     () => getDayString(settingsData.shiftDayCount),
@@ -31,17 +32,24 @@ export function Shield({
   const [todays] = useTodays(dayString);
   const { town } = todays;
 
-  let randomTowns = bonusData.shieldTowns;
+  let randomTowns = bonusData.shield.towns;
   if (randomTowns.length === 0 && undefined !== town) {
     randomTowns = pickManyWithTown(town, 4);
-    updateBonusData({ shieldTowns: randomTowns });
+    updateBonusData({ shield: { towns: randomTowns } });
   }
 
   const checkTown = (selectedTown: Town) => {
-    console.log(town);
-    if (selectedTown.code === town?.code) {
-      setCanPlayNextRound(true);
-      toast.success(t("welldone"));
+    if (canPlay) {
+      if (selectedTown.code === town?.code) {
+        setCanPlayNextRound(true);
+        toast.success(t("welldone"));
+      } else {
+        setCanPlayNextRound(false);
+        setCanPlay(false);
+        toast.error(t("incorrect"));
+      }
+    } else {
+      toast.error(t("bonusRoundNoMoreTries"));
     }
   };
 
@@ -65,7 +73,7 @@ export function Shield({
       <div className="flex my-2">
         {canPlayNextRound && (
           <PlayBonusRound
-            nextBonusRound={Bonus.SHIELD}
+            nextBonusRound={BonusRound.LIMITS}
             bonusData={bonusData}
             updateBonusData={updateBonusData}
           />

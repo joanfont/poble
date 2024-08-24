@@ -1,24 +1,29 @@
 import { ToastContainer, Flip } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Game } from "./components/Game";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Infos } from "./components/panels/Infos";
 import { Settings } from "./components/panels/Settings";
 import { useSettings } from "./hooks/useSettings";
 import { Worldle } from "./components/Worldle";
 import { Stats } from "./components/panels/Stats";
 import { MyEmoji } from "./components/Emoji";
-import { Bonus } from "./domain/bonus";
-import { useBonusRound } from "./hooks/useBonusRound";
+import { useBonus } from "./hooks/useBonus";
+import { getDayString } from "./hooks/useTodays";
 
 function App() {
   const [infoOpen, setInfoOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
 
-  const [bonusData, updateBonusData] = useBonusRound();
-
   const [settingsData, updateSettings] = useSettings();
+
+  const dayString = useMemo(
+    () => getDayString(settingsData.shiftDayCount),
+    [settingsData.shiftDayCount]
+  );
+
+  const [bonusData, updateBonusData] = useBonus(dayString);
 
   useEffect(() => {
     if (settingsData.theme === "dark") {
