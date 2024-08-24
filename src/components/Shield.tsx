@@ -6,12 +6,14 @@ import { getDayString, useTodays } from "../hooks/useTodays";
 import { BonusRound } from "../domain/bonus";
 import { SettingsData } from "../hooks/useSettings";
 import { PlayBonusRound } from "./PlayBonusRound";
+import { gameEnded } from "../domain/game";
+import { Share } from "./Share";
 import { BonusData } from "../hooks/useBonus";
 
 interface ShieldProps {
   settingsData: SettingsData;
   bonusData: BonusData;
-  updateBonusData: (bonusData: Partial<BonusData>) => void;
+  updateBonusData: (newBonusData: Partial<BonusData>) => void;
 }
 
 export function Shield({
@@ -21,7 +23,8 @@ export function Shield({
 }: ShieldProps) {
   const { t } = useTranslation();
 
-  const [canPlayNextRound, setCanPlayNextRound] = useState(false);
+  const canPlayNextRound = bonusData.passedRounds.includes(BonusRound.SHIELD);
+
   const [canPlay, setCanPlay] = useState(true);
 
   const dayString = useMemo(
@@ -30,7 +33,9 @@ export function Shield({
   );
 
   const [todays] = useTodays(dayString);
-  const { town } = todays;
+  const { town, guesses } = todays;
+
+  const gameIsEnded = gameEnded(guesses);
 
   let randomTowns = bonusData.shield.towns;
   if (randomTowns.length === 0 && undefined !== town) {
@@ -41,10 +46,11 @@ export function Shield({
   const checkTown = (selectedTown: Town) => {
     if (canPlay) {
       if (selectedTown.code === town?.code) {
-        setCanPlayNextRound(true);
+        updateBonusData({
+          passedRounds: [...bonusData.passedRounds, BonusRound.SHIELD],
+        });
         toast.success(t("welldone"));
       } else {
-        setCanPlayNextRound(false);
         setCanPlay(false);
         toast.error(t("incorrect"));
       }
@@ -75,11 +81,18 @@ export function Shield({
           );
         })}
       </div>
-      <div className="flex my-2">
+      <div className="my-2">
+        {gameIsEnded && (
+          <Share
+            guesses={guesses}
+            dayString={dayString}
+            settingsData={settingsData}
+            bonusData={bonusData}
+          />
+        )}
         {canPlayNextRound && (
           <PlayBonusRound
             nextBonusRound={BonusRound.LIMITS}
-            bonusData={bonusData}
             updateBonusData={updateBonusData}
           />
         )}

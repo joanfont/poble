@@ -7,13 +7,15 @@ import { getDayString, useTodays } from "../hooks/useTodays";
 import { MyEmoji } from "./Emoji";
 import { SettingsData } from "../hooks/useSettings";
 import { BonusData, LimitGuess } from "../hooks/useBonus";
-import _ from "lodash";
 import { LimitGuesses } from "./LimitGuesses";
+import { Share } from "./Share";
+import { gameEnded } from "../domain/game";
+import { BonusRound } from "../domain/bonus";
 
 interface LimitsProps {
   settingsData: SettingsData;
   bonusData: BonusData;
-  updateBonusData: (bonusData: Partial<BonusData>) => void;
+  updateBonusData: (newBonusData: Partial<BonusData>) => void;
 }
 
 export function Limits({
@@ -32,19 +34,24 @@ export function Limits({
 
   const [currentGuess, setCurrentGuess] = useState("");
 
-  const { guesses } = bonusData.limits;
+  const [todays] = useTodays(dayString);
+  const { town, guesses } = todays;
 
-  const containsAllValidGuesses = (limitGuesses: LimitGuess[]) => {
+  const hasAllValidGuesses = () => {
     if (undefined === town) {
       return false;
     }
 
-    const codes = limitGuesses.map(
+    const codes = bonusData.limits.guesses.map(
       (limitGuess: LimitGuess) => limitGuess.town.code
     );
 
+    if (codes.length !== town.neighbours.length) {
+      return false;
+    }
+
     for (const code of town.neighbours) {
-      if (!_.includes(codes, code)) {
+      if (!codes.includes(code)) {
         return false;
       }
     }
@@ -52,21 +59,18 @@ export function Limits({
     return true;
   };
 
-  const [todays] = useTodays(dayString);
-  const { town } = todays;
-
   const neighbours = undefined !== town ? getNeighbours(town) : [];
 
   const MAX_TRY_COUNT = neighbours.length + 2;
 
-  const gameEnded =
-    guesses.length === MAX_TRY_COUNT || containsAllValidGuesses(guesses);
+  const gameIsEnded = gameEnded(guesses);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       if (town == null) {
         return;
       }
+
       e.preventDefault();
       const guessedTown = towns.find(
         (town) => sanitizeTownName(town.name) === sanitizeTownName(currentGuess)
@@ -77,21 +81,47 @@ export function Limits({
         return;
       }
 
+      const newLimitGuess = {
+        town: guessedTown,
+        valid: town.neighbours.includes(guessedTown.code),
+      };
+
+      const newLimitGuesses = [...bonusData.limits.guesses, newLimitGuess];
       updateBonusData({
         limits: {
-          guesses: [
-            ...bonusData.limits.guesses,
-            {
-              town: guessedTown,
-              valid: _.includes(town.neighbours, guessedTown.code),
-            },
-          ],
+          guesses: newLimitGuesses,
         },
       });
 
+      const allGuessesAreValid = (limitGuesses: LimitGuess[]): boolean => {
+        const codes = limitGuesses.map(
+          (limitGuess: LimitGuess) => limitGuess.town.code
+        );
+
+        for (const code of town.neighbours) {
+          if (!codes.includes(code)) {
+            return false;
+          }
+        }
+
+        return true;
+      };
+
       setCurrentGuess("");
+
+      if (allGuessesAreValid(newLimitGuesses)) {
+        updateBonusData({
+          passedRounds: [...bonusData.passedRounds, BonusRound.LIMITS],
+          limits: {
+            guesses: newLimitGuesses,
+          },
+        });
+        toast.success(t("welldone"));
+      } else if (newLimitGuesses.length === MAX_TRY_COUNT) {
+        toast.error(t("bonusRoundNoMoreTries"));
+      }
     },
-    [town, currentGuess, t, bonusData, updateBonusData]
+    [town, currentGuess, t, bonusData, updateBonusData, MAX_TRY_COUNT]
   );
 
   return (
@@ -101,7 +131,7 @@ export function Limits({
           {t("guessLimits", { town: town?.name })}
         </span>
       </div>
-      <div className="grid grid-cols-2 gap-4 space-x-4 mt-4 mb-4">
+      <div className="grid grid-cols-3 mt-4 mb-4">
         {neighbours.map((town: Town) => {
           return (
             <div className="grid place-content-center" key={town.code}>
@@ -116,33 +146,42 @@ export function Limits({
       </div>
       <LimitGuesses
         rowCount={MAX_TRY_COUNT}
-        limitGuesses={guesses}
+        limitGuesses={bonusData.limits.guesses}
         townInputRef={townInputRef}
       />
       <div className="my-2">
-        {gameEnded && town ? (
-          <></>
-        ) : (
-          <form onSubmit={handleSubmit}>
-            <div className="flex flex-col">
-              <CountryInput
-                inputRef={townInputRef}
-                currentGuess={currentGuess}
-                setCurrentGuess={setCurrentGuess}
-              />
-              <button
-                className="rounded font-bold p-1 flex items-center justify-center border-2 uppercase my-0.5 hover:bg-gray-50 active:bg-gray-100 dark:hover:bg-slate-800 dark:active:bg-slate-700"
-                type="submit"
-              >
-                <MyEmoji
-                  text="🌍"
-                  options={{ className: "inline-block" }}
-                  className="flex items-center justify-center"
-                />{" "}
-                <span className="ml-1">{t("guess")}</span>
-              </button>
-            </div>
-          </form>
+        {!hasAllValidGuesses() &&
+          bonusData.limits.guesses.length < MAX_TRY_COUNT && (
+            <>
+              <form onSubmit={handleSubmit}>
+                <div className="flex flex-col">
+                  <CountryInput
+                    inputRef={townInputRef}
+                    currentGuess={currentGuess}
+                    setCurrentGuess={setCurrentGuess}
+                  />
+                  <button
+                    className="rounded font-bold p-1 flex items-center justify-center border-2 uppercase my-0.5 hover:bg-gray-50 active:bg-gray-100 dark:hover:bg-slate-800 dark:active:bg-slate-700"
+                    type="submit"
+                  >
+                    <MyEmoji
+                      text="🌍"
+                      options={{ className: "inline-block" }}
+                      className="flex items-center justify-center"
+                    />{" "}
+                    <span className="ml-1">{t("guess")}</span>
+                  </button>
+                </div>
+              </form>
+            </>
+          )}
+        {gameIsEnded && (
+          <Share
+            guesses={guesses}
+            bonusData={bonusData}
+            dayString={dayString}
+            settingsData={settingsData}
+          />
         )}
       </div>
     </div>

@@ -1,12 +1,13 @@
 import { DateTime } from "luxon";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import seedrandom from "seedrandom";
+import { useCallback, useEffect, useState } from "react";
 import { towns, Town } from "../domain/towns";
 import { Guess, loadAllGuesses, saveGuesses } from "../domain/guess";
 
 const startDay = "2022-05-05";
 
-const forcedTowns: Record<string, string> = {};
+const forcedTowns: Record<string, string> = {
+  "2024-08-25": "AN",
+};
 
 export function getDayString(shiftDayCount?: number) {
   return DateTime.now()

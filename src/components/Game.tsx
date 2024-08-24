@@ -3,14 +3,14 @@ import { Town } from "./Town";
 import { SettingsData } from "../hooks/useSettings";
 import { BonusRound } from "../domain/bonus";
 import { Shield } from "./Shield";
-import { BonusData } from "../hooks/useBonus";
+import { allBonusCompleted, BonusData } from "../hooks/useBonus";
 import { Limits } from "./Limits";
 
 interface GameProps {
   settingsData: SettingsData;
   updateSettings: (newSettings: Partial<SettingsData>) => void;
   bonusData: BonusData;
-  updateBonusData: (bonusData: Partial<BonusData>) => void;
+  updateBonusData: (newBonusData: Partial<BonusData>) => void;
 }
 
 export function Game({
@@ -19,7 +19,7 @@ export function Game({
   bonusData,
   updateBonusData,
 }: GameProps) {
-  if (BonusRound.NONE === bonusData.round) {
+  if (BonusRound.NONE === bonusData.round || allBonusCompleted(bonusData)) {
     return (
       <Town
         settingsData={settingsData}

@@ -9,6 +9,7 @@ export interface LimitGuess {
 
 export interface BonusData {
   round: BonusRound;
+  passedRounds: BonusRound[];
   shield: {
     towns: Town[];
   };
@@ -19,6 +20,7 @@ export interface BonusData {
 
 const defaultBonusData: BonusData = {
   round: BonusRound.NONE,
+  passedRounds: [],
   shield: {
     towns: [],
   },
@@ -67,4 +69,11 @@ export function useBonus(
   }, [dayString]);
 
   return [bonusData, addBonusData];
+}
+
+export function allBonusCompleted(bonusData: BonusData): boolean {
+  return (
+    bonusData.passedRounds.includes(BonusRound.SHIELD) &&
+    bonusData.passedRounds.includes(BonusRound.LIMITS)
+  );
 }

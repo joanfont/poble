@@ -18,15 +18,14 @@ import { MyEmoji } from "./Emoji";
 import { PlayBonusRound } from "./PlayBonusRound";
 import { BonusRound } from "../domain/bonus";
 import { SettingsData } from "../hooks/useSettings";
-import { BonusData } from "../hooks/useBonus";
-
-const MAX_TRY_COUNT = 4;
+import { allBonusCompleted, BonusData } from "../hooks/useBonus";
+import { gameEnded, MAX_TRY_COUNT } from "../domain/game";
 
 interface TownProps {
   settingsData: SettingsData;
   updateSettings: (newSettings: Partial<SettingsData>) => void;
   bonusData: BonusData;
-  updateBonusData: (bonusData: Partial<BonusData>) => void;
+  updateBonusData: (newBonusData: Partial<BonusData>) => void;
 }
 
 export function Town({
@@ -48,13 +47,11 @@ export function Town({
 
   const [currentGuess, setCurrentGuess] = useState("");
 
-  const gameEnded =
-    guesses.length === MAX_TRY_COUNT ||
-    guesses[guesses.length - 1]?.distance === 0;
+  const gameIsEnded = gameEnded(guesses);
 
-  const nextBonusRound = BonusRound.SHIELD;
-
-  const canPlayNextRound = guesses[guesses.length - 1]?.distance === 0;
+  const canPlayBonusRound =
+    guesses[guesses.length - 1]?.distance === 0 &&
+    !allBonusCompleted(bonusData);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -153,19 +150,19 @@ export function Town({
         townInputRef={townInputRef}
       />
       <div className="my-2">
-        {canPlayNextRound && town && (
+        {canPlayBonusRound && town && (
           <PlayBonusRound
-            nextBonusRound={nextBonusRound}
-            bonusData={bonusData}
+            nextBonusRound={BonusRound.SHIELD}
             updateBonusData={updateBonusData}
           />
         )}
-        {gameEnded && town ? (
+        {gameIsEnded && town ? (
           <>
             <Share
               guesses={guesses}
               dayString={dayString}
               settingsData={settingsData}
+              bonusData={bonusData}
             />
             <a
               className="underline w-full text-center block mt-4"
