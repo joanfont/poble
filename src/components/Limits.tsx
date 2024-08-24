@@ -21,7 +21,7 @@ export function Limits({
   bonusData,
   updateBonusData,
 }: LimitsProps) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const dayString = useMemo(
     () => getDayString(settingsData.shiftDayCount),
@@ -96,6 +96,11 @@ export function Limits({
 
   return (
     <div className="flex-grow flex flex-col mx-2">
+      <div className="flex mt-8 mb-8 place-content-center">
+        <span className="text-2xl place-content-center">
+          {t("guessLimits", { town: town?.name })}
+        </span>
+      </div>
       <div className="grid grid-cols-2 gap-4 space-x-4 mt-4 mb-4">
         {neighbours.map((town: Town) => {
           return (

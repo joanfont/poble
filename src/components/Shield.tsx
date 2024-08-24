@@ -55,6 +55,11 @@ export function Shield({
 
   return (
     <div className="flex-grow flex flex-col mx-2">
+      <div className="flex mt-8 mb-8 place-content-center">
+        <span className="text-2xl place-content-center">
+          {t("guessShield", { town: town?.name })}
+        </span>
+      </div>
       <div className="grid grid-cols-2 gap-4 space-x-4 mt-4 mb-4">
         {randomTowns.map((town: Town) => {
           return (
