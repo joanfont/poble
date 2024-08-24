@@ -3,29 +3,27 @@ import "react-toastify/dist/ReactToastify.css";
 import { Game } from "./components/Game";
 import React, { useEffect, useMemo, useState } from "react";
 import { Infos } from "./components/panels/Infos";
-import { useTranslation } from "react-i18next";
 import { Settings } from "./components/panels/Settings";
 import { useSettings } from "./hooks/useSettings";
 import { Worldle } from "./components/Worldle";
 import { Stats } from "./components/panels/Stats";
-import { useReactPWAInstall } from "@teuteuf/react-pwa-install";
-import { InstallButton } from "./components/InstallButton";
 import { MyEmoji } from "./components/Emoji";
-import { getDayString, useTodays } from "./hooks/useTodays";
+import { useBonus } from "./hooks/useBonus";
+import { getDayString } from "./hooks/useTodays";
 
 function App() {
-  const { t, i18n } = useTranslation();
-
-  const dayString = useMemo(getDayString, []);
-  const [{ town }] = useTodays(dayString);
-
-  const { pwaInstall, supported, isInstalled } = useReactPWAInstall();
-
   const [infoOpen, setInfoOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
 
   const [settingsData, updateSettings] = useSettings();
+
+  const dayString = useMemo(
+    () => getDayString(settingsData.shiftDayCount),
+    [settingsData.shiftDayCount]
+  );
+
+  const [bonusData, updateBonusData] = useBonus(dayString);
 
   useEffect(() => {
     if (settingsData.theme === "dark") {
@@ -71,9 +69,6 @@ function App() {
             >
               <MyEmoji text="❓" />
             </button>
-            {supported() && !isInstalled() && (
-              <InstallButton pwaInstall={pwaInstall} />
-            )}
             <h1 className="text-4xl font-bold uppercase tracking-wide text-center my-1 flex-auto">
               Pob<span className="text-green-600">le</span>
             </h1>
@@ -92,7 +87,12 @@ function App() {
               <MyEmoji text="⚙️" />
             </button>
           </header>
-          <Game settingsData={settingsData} updateSettings={updateSettings} />
+          <Game
+            settingsData={settingsData}
+            updateSettings={updateSettings}
+            bonusData={bonusData}
+            updateBonusData={updateBonusData}
+          />
           <footer className="flex justify-center items-center text-sm mt-8 mb-1">
             <MyEmoji
               text="❤️"

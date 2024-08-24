@@ -11,6 +11,8 @@ import {
 import { Guess } from "../domain/guess";
 import React from "react";
 import { SettingsData } from "../hooks/useSettings";
+import { BonusData } from "../hooks/useBonus";
+import { BonusRound } from "../domain/bonus";
 
 const START_DATE = DateTime.fromISO("2022-03-19");
 
@@ -18,16 +20,14 @@ interface ShareProps {
   guesses: Guess[];
   dayString: string;
   settingsData: SettingsData;
-  hideImageMode: boolean;
-  rotationMode: boolean;
+  bonusData: BonusData;
 }
 
 export function Share({
   guesses,
   dayString,
   settingsData,
-  hideImageMode,
-  rotationMode,
+  bonusData,
 }: ShareProps) {
   const { t } = useTranslation();
   const { theme } = settingsData;
@@ -41,15 +41,12 @@ export function Share({
         "day"
       )
     );
-    const difficultyModifierEmoji = hideImageMode
-      ? " 🙈"
-      : rotationMode
-      ? " 🌀"
-      : "";
+
     const bestPercent = `(${computeProximityPercent(
       bestDistance
     ).toString()}%)`;
-    const title = `#Poble #${dayCount} ${guessCount}/4 ${bestPercent}${difficultyModifierEmoji}`;
+
+    const title = `#Poble #${dayCount} ${guessCount}/4 ${bestPercent}`;
 
     const guessString = guesses
       .map((guess) => {
@@ -60,8 +57,24 @@ export function Share({
       })
       .join("\n");
 
-    return [title, guessString, "", "https://poble.joanfont.cat"].join("\n");
-  }, [dayString, guesses, hideImageMode, rotationMode, theme]);
+    const bonusStrings = [];
+    if (bonusData.passedRounds.includes(BonusRound.SHIELD)) {
+      bonusStrings.push("🛡️");
+    }
+
+    if (bonusData.passedRounds.includes(BonusRound.LIMITS)) {
+      bonusStrings.push("🧭");
+    }
+
+    return [
+      title,
+      guessString,
+      "",
+      bonusStrings.join(" "),
+      "",
+      "https://poble.joanfont.cat",
+    ].join("\n");
+  }, [dayString, guesses, theme, bonusData.passedRounds]);
 
   return (
     <CopyToClipboard
