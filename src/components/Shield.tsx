@@ -72,7 +72,7 @@ export function Shield({
             <button key={town.code} onClick={() => checkTown(town)}>
               <div className="grid place-content-center">
                 <img
-                  className={`pointer-events-none h-52 transition-transform duration-700 ease-in dark:invert`}
+                  className={`pointer-events-none h-52 transition-transform duration-700 ease-in`}
                   alt="shield to guess"
                   src={`images/towns/${town?.code.toLowerCase()}/shield.svg`}
                 />
