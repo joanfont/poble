@@ -59,6 +59,17 @@ export function Limits({
     return true;
   };
 
+  const townIsGuessed = useCallback(
+    (t: Town): boolean => {
+      const guessCodes = bonusData.limits.guesses
+        .filter((lg: LimitGuess) => lg.valid)
+        .map((lg: LimitGuess) => lg.town.code);
+
+      return guessCodes.includes(t.code);
+    },
+    [bonusData.limits.guesses]
+  );
+
   const neighbours = undefined !== town ? getNeighbours(town) : [];
 
   const MAX_TRY_COUNT = neighbours.length + 2;
@@ -131,12 +142,20 @@ export function Limits({
           {t("guessLimits", { town: town?.name })}
         </span>
       </div>
-      <div className="grid grid-cols-3 mt-4 mb-4">
+      <div className="grid grid-cols-3 pt-4 pb-4 mt-4 mb-4">
         {neighbours.map((town: Town) => {
           return (
-            <div className="grid place-content-center" key={town.code}>
+            <div
+              className="grid place-content-center mt-4 mb-4 ml-4 mr-4"
+              key={town.code}
+            >
               <img
-                className={`pointer-events-none h-52 transition-transform duration-700 ease-in dark:invert`}
+                className={
+                  `pointer-events-none h-52 transition-transform duration-700 ease-in dark:invert pb-4 pt-4 pt-4 pr-4` &&
+                  townIsGuessed(town)
+                    ? " bg-pink-500 rounded invert"
+                    : ""
+                }
                 alt="shield to guess"
                 src={`images/towns/${town?.code.toLowerCase()}/shape.svg`}
               />
