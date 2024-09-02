@@ -39,7 +39,7 @@ export const towns: Town[] = [
     latitude: 39.8265,
     longitude: 2.8471,
     name: "Escorca",
-    neighbours: ["SO", "FO", "PL", "CM", "SE", "MN", "AL", "BU"],
+    neighbours: ["SO", "FO", "PL", "CM", "SE", "MN", "AL", "BN"],
   },
   {
     code: "SM",
