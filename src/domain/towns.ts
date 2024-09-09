@@ -74,7 +74,7 @@ export const towns: Town[] = [
     latitude: 39.706667,
     longitude: 2.790833,
     name: "Alaró",
-    neighbours: ["BU", "ES", "MN", "LS", "BI", "CO", "SR"],
+    neighbours: ["BN", "ES", "MN", "LS", "BI", "CO", "SR"],
   },
   {
     code: "MU",
