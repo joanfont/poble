@@ -151,7 +151,7 @@ export const towns: Town[] = [
     latitude: 39.7545,
     longitude: 2.9007,
     name: "Selva",
-    neighbours: ["MN", "ES", "CM", "BU", "IN", "LO"],
+    neighbours: ["MN", "ES", "CM", "BU", "IN", "LS"],
   },
   {
     code: "SI",
