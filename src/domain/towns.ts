@@ -351,8 +351,8 @@ export const towns: Town[] = [
   },
   {
     code: "SN",
-    latitude: 39.6431,
-    longitude: 3.0116,
+    latitude: 39.64644,
+    longitude: 2.89782,
     name: "Sencelles",
     neighbours: ["CO", "BI", "IN", "CS", "LO", "AG", "SU"],
   },
