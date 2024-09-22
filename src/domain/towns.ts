@@ -179,7 +179,7 @@ export const towns: Town[] = [
     latitude: 39.6535,
     longitude: 2.481,
     name: "Estellencs",
-    neighbours: ["AN", "BA", "PU"],
+    neighbours: ["AN", "BA", "PU", "CA"],
   },
   {
     code: "IN",
