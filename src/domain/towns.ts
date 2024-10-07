@@ -270,7 +270,7 @@ export const towns: Town[] = [
     latitude: 39.711678,
     longitude: 2.622581,
     name: "Valldemossa",
-    neighbours: ["BA", "DE", "BU", "PA", "EP"],
+    neighbours: ["BA", "DE", "BN", "PA", "EP"],
   },
   {
     code: "SS",
