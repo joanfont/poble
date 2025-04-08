@@ -20,7 +20,7 @@ import { BonusRound } from "../domain/bonus";
 import { SettingsData } from "../hooks/useSettings";
 import { allBonusCompleted, BonusData } from "../hooks/useBonus";
 import { gameEnded, MAX_TRY_COUNT } from "../domain/game";
-
+import { Map } from "./Map";
 interface TownProps {
   settingsData: SettingsData;
   updateSettings: (newSettings: Partial<SettingsData>) => void;
@@ -125,11 +125,9 @@ export function Town({
             <MyEmoji text="↪️" className="text-xl" />
           </button>
         )}
-        <img
-          className="pointer-events-none max-h-52 m-auto transition-transform duration-700 ease-in dark:invert h-full"
-          alt="town to guess"
-          src={`images/towns/${town?.code.toLowerCase()}/shape.svg`}
-        />
+        {town && (
+          <Map zoom={10} latitude={town.latitude} longitude={town.longitude} />
+        )}
         {settingsData.allowShiftingDay && settingsData.shiftDayCount < 7 && (
           <button
             type="button"

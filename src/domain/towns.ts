@@ -395,7 +395,7 @@ export function sanitizeTownName(townName: string): string {
 }
 
 export function pickManyWithTown(town: Town, howMany: number): Town[] {
-  const allTownsExceptTown = _.filter(towns, (t: Town) => t.code != town.code);
+  const allTownsExceptTown = _.filter(towns, (t: Town) => t.code !== town.code);
   return _.shuffle([town, ..._.sampleSize(allTownsExceptTown, howMany - 1)]);
 }
 
@@ -404,7 +404,7 @@ export function getNeighbours(town: Town): Town[] {
 
   for (const code of town.neighbours) {
     const foundTown = _.find(towns, (t: Town) => t.code === code);
-    if (undefined != foundTown) {
+    if (undefined !== foundTown) {
       foundTowns.push(foundTown);
     }
   }
