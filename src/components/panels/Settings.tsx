@@ -29,6 +29,25 @@ export function Settings({
       <div className="my-4">
         <div className="flex p-1">
           <select
+            id="setting-mode"
+            className="h-8 dark:bg-slate-800"
+            value={settingsData.mode}
+            onChange={(e) =>
+              updateSettings({ mode: e.target.value as "satellite" | "shape" })
+            }
+          >
+            <option value="satellite">Satèl·lit</option>
+            <option value="shape">Forma</option>
+          </select>
+          <label
+            className="flex-1 ml-2 flex items-center"
+            htmlFor="setting-theme"
+          >
+            {t("settings.mode")}
+          </label>
+        </div>
+        <div className="flex p-1">
+          <select
             id="setting-distanceUnit"
             className="h-8 dark:bg-slate-800"
             value={settingsData.distanceUnit}

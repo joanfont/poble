@@ -21,6 +21,7 @@ const resources = {
       cancelRotation: "🌀 Anular rotació",
       settings: {
         title: "Paràmetres",
+        mode: "Mode",
         distanceUnit: "Unitat de distància",
         theme: "Tema",
         difficultyModifiers: "Modificador de dificultat",
