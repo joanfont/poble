@@ -125,8 +125,15 @@ export function Town({
             <MyEmoji text="↪️" className="text-xl" />
           </button>
         )}
-        {town && (
+        {settingsData.mode === "satellite" && town && (
           <Map zoom={10} latitude={town.latitude} longitude={town.longitude} />
+        )}
+        {settingsData.mode === "shape" && town && (
+          <img
+            className="pointer-events-none max-h-52 m-auto transition-transform duration-700 ease-in dark:invert h-full"
+            alt="town to guess"
+            src={`images/towns/${town?.code.toLowerCase()}/shape.svg`}
+          />
         )}
         {settingsData.allowShiftingDay && settingsData.shiftDayCount < 7 && (
           <button
